@@ -8,7 +8,6 @@ public class LeilaoTest {
 
     private final Leilao itemDoLeilao = new Leilao("Console");
     private final Usuario douglas = new Usuario("Douglas");
-    private final Usuario carol = new Usuario("Carol");
 
     @Test
     public void deveDevolverDescricaoQuandoRecebeDescricao() {
@@ -32,7 +31,7 @@ public class LeilaoTest {
     @Test
     public void deveDevolveMaiorLanceQuandoRecebeMaisDeUmLanceEmOrdemDescrescente() {
         itemDoLeilao.propoe(new Lance(douglas, 500.0));
-        itemDoLeilao.propoe(new Lance(carol, 100.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 100.0));
         double maiorLanceDevolvido = itemDoLeilao.getMaiorLance();
         assertEquals(500.0, maiorLanceDevolvido, 0.0001);
     }
@@ -40,7 +39,7 @@ public class LeilaoTest {
     @Test
     public void deveDevolveMaiorLanceQuandoRecebeMaisDeUmLanceEmOrdemCrescente() {
         itemDoLeilao.propoe(new Lance(douglas, 7000.0));
-        itemDoLeilao.propoe(new Lance(carol, 10000.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 10000.0));
         double maiorLanceDevolvido = itemDoLeilao.getMaiorLance();
         assertEquals(10000.0, maiorLanceDevolvido, 0.0001);
     }
@@ -55,7 +54,7 @@ public class LeilaoTest {
     @Test
     public void deveDevolveMenorLanceQuandoRecebeMaisDeUmLanceEmOrdemDescrescente() {
         itemDoLeilao.propoe(new Lance(douglas, 500.0));
-        itemDoLeilao.propoe(new Lance(carol, 100.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 100.0));
         double menorLanceDevolvido = itemDoLeilao.getMenorLance();
         assertEquals(100.0, menorLanceDevolvido, 0.0001);
     }
@@ -63,7 +62,7 @@ public class LeilaoTest {
     @Test
     public void deveDevolveMenorLanceQuandoRecebeMaisDeUmLanceEmOrdemCrescente() {
         itemDoLeilao.propoe(new Lance(douglas, 7000.0));
-        itemDoLeilao.propoe(new Lance(carol, 10000.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 10000.0));
         double menorLanceDevolvido = itemDoLeilao.getMenorLance();
         assertEquals(7000.0, menorLanceDevolvido, 0.0001);
     }
