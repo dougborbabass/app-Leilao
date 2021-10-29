@@ -50,22 +50,22 @@ public class ListaLeilaoAdapter extends RecyclerView.Adapter<ListaLeilaoAdapter.
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView descricao;
+        private final TextView maiorLance;
         private Leilao leilao;
 
         ViewHolder(View itemView) {
             super(itemView);
+
             descricao = itemView.findViewById(R.id.item_leilao_descricao);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onItemClick(leilao);
-                }
-            });
+            maiorLance = itemView.findViewById(R.id.item_leilao_maior_lance);
+
+            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(leilao));
         }
 
         void vincula(Leilao leilao) {
             this.leilao = leilao;
             descricao.setText(leilao.getDescricao());
+            maiorLance.setText(String.valueOf(leilao.getMaiorLance()));
         }
 
     }
