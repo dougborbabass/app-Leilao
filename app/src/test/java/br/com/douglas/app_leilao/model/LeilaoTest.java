@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import br.com.douglas.app_leilao.builder.LeilaoBuilder;
+
 import static org.junit.Assert.assertEquals;
 
 public class LeilaoTest {
@@ -155,22 +157,24 @@ public class LeilaoTest {
 
     @Test
     public void naoDeve_AdicionarLance_QuandoUsuarioDerCincoLances() {
-        itemDoLeilao.propoe(new Lance(douglas, 500.00));
+
         final Usuario carol = new Usuario("Carol");
-        itemDoLeilao.propoe(new Lance(carol, 600.00));
-        itemDoLeilao.propoe(new Lance(douglas, 700.00));
-        itemDoLeilao.propoe(new Lance(carol, 800.00));
-        itemDoLeilao.propoe(new Lance(douglas, 900.00));
-        itemDoLeilao.propoe(new Lance(carol, 1000.00));
-        itemDoLeilao.propoe(new Lance(douglas, 1100.00));
-        itemDoLeilao.propoe(new Lance(carol, 1200.00));
-        itemDoLeilao.propoe(new Lance(douglas, 1300.00));
-        itemDoLeilao.propoe(new Lance(carol, 1400.00));
+        final Leilao item = new LeilaoBuilder("Computador")
+                .lance(douglas, 100)
+                .lance(carol, 200)
+                .lance(douglas, 300)
+                .lance(carol, 400)
+                .lance(douglas, 500)
+                .lance(carol, 600)
+                .lance(douglas, 700)
+                .lance(carol, 800)
+                .lance(douglas, 900)
+                .lance(carol, 1000)
+                .lance(douglas, 1100)
+                .lance(carol, 1200)
+                .build();
 
-        itemDoLeilao.propoe(new Lance(douglas, 1500.00));
-        itemDoLeilao.propoe(new Lance(carol, 1600.00));
-
-        int quantidadeDeLancesDevolvida = itemDoLeilao.quantidadeDeLances();
+        int quantidadeDeLancesDevolvida = item.quantidadeDeLances();
         assertEquals(10, quantidadeDeLancesDevolvida);
     }
 }
