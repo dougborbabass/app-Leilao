@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.douglas.app_leilao.builder.LeilaoBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class LeilaoTest {
 
@@ -37,9 +38,9 @@ public class LeilaoTest {
     @Test
     public void deve_DevolveMaiorLance_QuandoRecebeMaisDeUmLanceEmOrdemDescrescente() {
         itemDoLeilao.propoe(new Lance(douglas, 500.0));
-        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 100.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 600.0));
         double maiorLanceDevolvido = itemDoLeilao.getMaiorLance();
-        assertEquals(500.0, maiorLanceDevolvido, DELTA);
+        assertEquals(600.0, maiorLanceDevolvido, DELTA);
     }
 
     @Test
@@ -111,20 +112,20 @@ public class LeilaoTest {
         itemDoLeilao.propoe(new Lance(douglas, 200.0));
         itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 300.0));
         itemDoLeilao.propoe(new Lance(new Usuario("Felipe"), 400.0));
-        itemDoLeilao.propoe(new Lance(new Usuario("Roberto"), 100.0));
+        itemDoLeilao.propoe(new Lance(new Usuario("Roberto"), 600.0));
         List<Lance> tresMaioresLancesDevolvidosParaQuatroLances = itemDoLeilao.tresMaioresLances();
 
         assertEquals(3, tresMaioresLancesDevolvidosParaQuatroLances.size());
-        assertEquals(400.0, tresMaioresLancesDevolvidosParaQuatroLances.get(0).getValor(), DELTA);
-        assertEquals(300.0, tresMaioresLancesDevolvidosParaQuatroLances.get(1).getValor(), DELTA);
-        assertEquals(200.0, tresMaioresLancesDevolvidosParaQuatroLances.get(2).getValor(), DELTA);
+        assertEquals(600.0, tresMaioresLancesDevolvidosParaQuatroLances.get(0).getValor(), DELTA);
+        assertEquals(400.0, tresMaioresLancesDevolvidosParaQuatroLances.get(1).getValor(), DELTA);
+        assertEquals(300.0, tresMaioresLancesDevolvidosParaQuatroLances.get(2).getValor(), DELTA);
 
         itemDoLeilao.propoe(new Lance(new Usuario("Caroline"), 700.0));
         List<Lance> tresMaioresLancesDevolvidosParaCincoLances = itemDoLeilao.tresMaioresLances();
         assertEquals(3, tresMaioresLancesDevolvidosParaCincoLances.size());
         assertEquals(700.0, tresMaioresLancesDevolvidosParaCincoLances.get(0).getValor(), DELTA);
-        assertEquals(400.0, tresMaioresLancesDevolvidosParaCincoLances.get(1).getValor(), DELTA);
-        assertEquals(300.0, tresMaioresLancesDevolvidosParaCincoLances.get(2).getValor(), DELTA);
+        assertEquals(600.0, tresMaioresLancesDevolvidosParaCincoLances.get(1).getValor(), DELTA);
+        assertEquals(400.0, tresMaioresLancesDevolvidosParaCincoLances.get(2).getValor(), DELTA);
     }
 
     @Test
@@ -142,39 +143,47 @@ public class LeilaoTest {
     @Test
     public void naoDeve_AdicionarLance_QuandoForMenorQueOMaiorLance() {
         itemDoLeilao.propoe(new Lance(douglas, 500.00));
-        itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 400.00));
-        int quantidadeDeLancesDevolvida = itemDoLeilao.quantidadeDeLances();
-        assertEquals(1, quantidadeDeLancesDevolvida);
+        try {
+            itemDoLeilao.propoe(new Lance(new Usuario("Carol"), 400.00));
+            fail("Era esperado uma runtimeException");
+        } catch (RuntimeException e) {
+            assertEquals("Lance foi menor que o maior lance", e.getMessage());
+        }
     }
 
     @Test
     public void naoDeve_AdicionarLance_QuandoForOMesmoUsuarioDoUltimoLance() {
         itemDoLeilao.propoe(new Lance(douglas, 500.00));
-        itemDoLeilao.propoe(new Lance(douglas, 600.00));
-        int quantidadeDeLancesDevolvida = itemDoLeilao.quantidadeDeLances();
-        assertEquals(1, quantidadeDeLancesDevolvida);
+
+        try {
+            itemDoLeilao.propoe(new Lance(douglas, 600.00));
+            fail("Era esperado uma runtimeException");
+        } catch (RuntimeException e) {
+            assertEquals("Mesmo usuário do ultimo lance", e.getMessage());
+        }
     }
 
     @Test
     public void naoDeve_AdicionarLance_QuandoUsuarioDerCincoLances() {
 
         final Usuario carol = new Usuario("Carol");
-        final Leilao item = new LeilaoBuilder("Computador")
-                .lance(douglas, 100)
-                .lance(carol, 200)
-                .lance(douglas, 300)
-                .lance(carol, 400)
-                .lance(douglas, 500)
-                .lance(carol, 600)
-                .lance(douglas, 700)
-                .lance(carol, 800)
-                .lance(douglas, 900)
-                .lance(carol, 1000)
-                .lance(douglas, 1100)
-                .lance(carol, 1200)
-                .build();
+        itemDoLeilao.propoe(new Lance(douglas, 100.00));
+        itemDoLeilao.propoe(new Lance(carol, 200.00));
+        itemDoLeilao.propoe(new Lance(douglas, 300.00));
+        itemDoLeilao.propoe(new Lance(carol, 400.00));
+        itemDoLeilao.propoe(new Lance(douglas, 500.00));
+        itemDoLeilao.propoe(new Lance(carol, 600.00));
+        itemDoLeilao.propoe(new Lance(douglas, 700.00));
+        itemDoLeilao.propoe(new Lance(carol, 800.00));
+        itemDoLeilao.propoe(new Lance(douglas, 900.00));
+        itemDoLeilao.propoe(new Lance(carol, 1000.00));
 
-        int quantidadeDeLancesDevolvida = item.quantidadeDeLances();
-        assertEquals(10, quantidadeDeLancesDevolvida);
+        try {
+            itemDoLeilao.propoe(new Lance(douglas, 1100.00));
+            fail("Era esperado uma runtimeException");
+        } catch (RuntimeException e) {
+            assertEquals("Usuario já deu 5 lances", e.getMessage());
+        }
+
     }
 }

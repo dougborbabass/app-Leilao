@@ -50,12 +50,14 @@ public class Leilao implements Serializable {
     }
 
     private boolean lanceNaoValido(Lance lance) {
-        if (lanceForMenorQueUltimoLance(lance)) return true;
-
+        if (lanceForMenorQueUltimoLance(lance))
+            throw new RuntimeException("Lance foi menor que o maior lance");
         if (temLances()) {
             Usuario usuarioNovo = lance.getUsuario();
-            if (usuarioForOMesmoDoUltimoLance(usuarioNovo)) return true;
-            if (usuarioDeuCincoLances(usuarioNovo)) return true;
+            if (usuarioForOMesmoDoUltimoLance(usuarioNovo))
+                throw new RuntimeException("Mesmo usuário do ultimo lance");
+            if (usuarioDeuCincoLances(usuarioNovo))
+                throw new RuntimeException("Usuario já deu 5 lances");
         }
         return false;
     }
