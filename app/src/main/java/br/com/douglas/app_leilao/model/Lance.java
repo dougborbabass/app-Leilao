@@ -21,5 +21,9 @@ public class Lance implements Serializable, Comparable {
         Lance lance = (Lance) o;
         return Double.compare(lance.getValor(), valor);
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
 }
 
