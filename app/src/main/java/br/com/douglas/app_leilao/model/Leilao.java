@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.douglas.app_leilao.exception.LanceMenorQueOUltimoLanceException;
+import br.com.douglas.app_leilao.exception.LanceSeguidoDoMesmoUsuarioException;
+import br.com.douglas.app_leilao.exception.UsuarioJaDeuCincoLancesException;
+
 public class Leilao implements Serializable {
 
     private final String descricao;
@@ -51,13 +55,15 @@ public class Leilao implements Serializable {
 
     private boolean lanceNaoValido(Lance lance) {
         if (lanceForMenorQueUltimoLance(lance))
-            throw new RuntimeException("Lance foi menor que o maior lance");
+            throw new LanceMenorQueOUltimoLanceException();
+
         if (temLances()) {
             Usuario usuarioNovo = lance.getUsuario();
             if (usuarioForOMesmoDoUltimoLance(usuarioNovo))
-                throw new RuntimeException("Mesmo usuário do ultimo lance");
+                throw new LanceSeguidoDoMesmoUsuarioException();
+
             if (usuarioDeuCincoLances(usuarioNovo))
-                throw new RuntimeException("Usuario já deu 5 lances");
+                throw new UsuarioJaDeuCincoLancesException();
         }
         return false;
     }
