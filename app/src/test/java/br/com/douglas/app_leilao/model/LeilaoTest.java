@@ -1,6 +1,7 @@
 package br.com.douglas.app_leilao.model;
 
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,6 +12,12 @@ import br.com.douglas.app_leilao.exception.LanceMenorQueOUltimoLanceException;
 import br.com.douglas.app_leilao.exception.LanceSeguidoDoMesmoUsuarioException;
 import br.com.douglas.app_leilao.exception.UsuarioJaDeuCincoLancesException;
 
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -32,14 +39,14 @@ public class LeilaoTest {
         String descricaoDevolvida = console.getDescricao();
 
         // testar resultado esperado
-        assertEquals("Console", descricaoDevolvida);
+        assertThat(descricaoDevolvida, is("Console"));
     }
 
     @Test
     public void deve_DevolveMaiorLance_QuandoRecebeApenasUmLance() {
         itemDoLeilao.propoe(new Lance(douglas, 200.0));
         double maiorLanceDevolvido = itemDoLeilao.getMaiorLance();
-        assertEquals(200.0, maiorLanceDevolvido, DELTA);
+        assertThat(maiorLanceDevolvido, closeTo(200, DELTA));
     }
 
     @Test
@@ -81,7 +88,7 @@ public class LeilaoTest {
 
         List<Lance> tresMaioresLancesDevolvidos = itemDoLeilao.tresMaioresLances();
 
-        assertEquals(3, tresMaioresLancesDevolvidos.size());
+        assertThat(tresMaioresLancesDevolvidos, hasSize(3));
         assertEquals(400.0, tresMaioresLancesDevolvidos.get(0).getValor(), DELTA);
         assertEquals(300.0, tresMaioresLancesDevolvidos.get(1).getValor(), DELTA);
         assertEquals(200.0, tresMaioresLancesDevolvidos.get(2).getValor(), DELTA);
