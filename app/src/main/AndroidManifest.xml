@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.LancesLeilaoActivity" />
+        <activity android:name=".ui.activity.ListaUsuarioActivity" />
     </application>
 
 </manifest>

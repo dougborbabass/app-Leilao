@@ -2,6 +2,8 @@ package br.com.douglas.app_leilao.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,28 +28,35 @@ public class ListaLeilaoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_leilao);
+        getSupportActionBar().setTitle(TITULO_APPBAR);
         configuraListaLeiloes();
     }
 
     private void configuraListaLeiloes() {
+
         configuraAdapter();
-        configuraReyclerView();
+        configuraRecyclerView();
     }
 
-    private void configuraAdapter() {
-        adapter = new ListaLeilaoAdapter(this); //leiloesDeExemplo()
-        adapter.setOnItemClickListener(leilao -> {
-            vaiParaTelaDeLances(leilao);
-        });
-    }
-
-    private void configuraReyclerView() {
+    private void configuraRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.lista_leilao_recyclerview);
         recyclerView.setAdapter(adapter);
     }
 
+    private void configuraAdapter() {
+        adapter = new ListaLeilaoAdapter(this);
+        adapter.setOnItemClickListener(new ListaLeilaoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Leilao leilao) {
+                vaiParaTelaDeLances(leilao);
+            }
+        });
+    }
+
     private void vaiParaTelaDeLances(Leilao leilao) {
-        Intent vaiParaLancesLeilao = new Intent(ListaLeilaoActivity.this, LancesLeilaoActivity.class);
+        Intent vaiParaLancesLeilao = new Intent(
+                ListaLeilaoActivity.this,
+                LancesLeilaoActivity.class);
         vaiParaLancesLeilao.putExtra("leilao", leilao);
         startActivity(vaiParaLancesLeilao);
     }
@@ -68,6 +77,22 @@ public class ListaLeilaoActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.lista_leilao_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.lista_leilao_menu_usuarios) {
+            Intent vaiParaListaDeUsuarios = new Intent(this, ListaUsuarioActivity.class);
+            startActivity(vaiParaListaDeUsuarios);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 //    private List<Leilao> leiloesDeExemplo() {

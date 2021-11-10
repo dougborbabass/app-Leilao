@@ -2,42 +2,129 @@ package br.com.douglas.app_leilao.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import br.com.douglas.app_leilao.R;
+import br.com.douglas.app_leilao.api.EnviadorDeLance;
+import br.com.douglas.app_leilao.api.retrofit.client.LeilaoWebClient;
+import br.com.douglas.app_leilao.database.dao.UsuarioDAO;
 import br.com.douglas.app_leilao.formatter.FormatadorDeMoeda;
 import br.com.douglas.app_leilao.model.Lance;
 import br.com.douglas.app_leilao.model.Leilao;
+import br.com.douglas.app_leilao.ui.dialog.NovoLanceDialog;
 
 public class LancesLeilaoActivity extends AppCompatActivity {
+
+    private static final String TITULO_APPBAR = "Lances do leilão";
+
+    private TextView maioresLances;
+    private TextView menorLance;
+    private TextView maiorLance;
+    private TextView descricao;
+    private FormatadorDeMoeda formatador;
+    private UsuarioDAO dao;
+    private Leilao leilaoRecebido;
+    private final LeilaoWebClient client = new LeilaoWebClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lances_leilao);
+        getSupportActionBar().setTitle(TITULO_APPBAR);
+        carregaLeilaoRecebido();
+    }
+
+    private void carregaLeilaoRecebido() {
         Intent dadosRecebidos = getIntent();
         if (dadosRecebidos.hasExtra("leilao")) {
-            Leilao leilao = (Leilao) dadosRecebidos.getSerializableExtra("leilao");
-            FormatadorDeMoeda formatadorDeMoeda = new FormatadorDeMoeda();
-
-            TextView descricao = findViewById(R.id.lances_leilao_descricao);
-            descricao.setText(leilao.getDescricao());
-
-            TextView maiorLance = findViewById(R.id.lances_leilao_maior_lance);
-            maiorLance.setText(formatadorDeMoeda.formata(leilao.getMaiorLance()));
-
-            TextView menorLance = findViewById(R.id.lances_leilao_menor_lance);
-            menorLance.setText(formatadorDeMoeda.formata(leilao.getMenorLance()));
-
-            TextView maioresLances = findViewById(R.id.lances_leilao_maiores_lances);
-            StringBuilder sb = new StringBuilder();
-            for (Lance lance: leilao.tresMaioresLances()) {
-                sb.append(lance.getValor()).append("\n");
-            }
-            String maioresLancesEmTexto = sb.toString();
-            maioresLances.setText(maioresLancesEmTexto);
+            leilaoRecebido = (Leilao) dadosRecebidos.getSerializableExtra("leilao");
+            inicializaAtributos();
+            inicializaViews();
+            apresentaDados();
+            configuraFab();
+        } else {
+            finish();
         }
     }
+
+    private void inicializaViews() {
+        descricao = findViewById(R.id.lances_leilao_descricao);
+        maiorLance = findViewById(R.id.lances_leilao_maior_lance);
+        menorLance = findViewById(R.id.lances_leilao_menor_lance);
+        maioresLances = findViewById(R.id.lances_leilao_maiores_lances);
+    }
+
+    private void inicializaAtributos() {
+        formatador = new FormatadorDeMoeda();
+        dao = new UsuarioDAO(this);
+    }
+
+    private void configuraFab() {
+        FloatingActionButton fabAdiciona = findViewById(R.id.lances_leilao_fab_adiciona);
+        fabAdiciona.setOnClickListener(view -> mostraDialogNovoLance());
+    }
+
+    private void mostraDialogNovoLance() {
+        NovoLanceDialog dialog = new NovoLanceDialog(
+                this,
+                this::enviaLance,
+                dao);
+        dialog.mostra();
+    }
+
+    private void enviaLance(Lance lance) {
+        EnviadorDeLance enviador = new EnviadorDeLance(
+                client,
+                lanceProcessadoListener(),
+                this);
+        enviador.envia(leilaoRecebido, lance);
+    }
+
+    @NonNull
+    private EnviadorDeLance.LanceProcessadoListener lanceProcessadoListener() {
+        return leilao -> {
+            leilaoRecebido = leilao;
+            apresentaDados();
+        };
+    }
+
+    private void apresentaDados() {
+        adicionaDescricao(leilaoRecebido);
+        adicionaMaiorLance(leilaoRecebido);
+        adicionaMenorLance(leilaoRecebido);
+        adicionaMaioresLances(leilaoRecebido);
+    }
+
+    private void adicionaMaioresLances(Leilao leilao) {
+        StringBuilder sb = new StringBuilder();
+        for (Lance lance :
+                leilao.tresMaioresLances()) {
+            sb.append(lance.getValor())
+                    .append(" - ")
+                    .append(lance.getUsuario())
+                    .append("\n");
+        }
+        String maioresLancesEmTexto = sb.toString();
+        maioresLances.setText(maioresLancesEmTexto);
+    }
+
+    private void adicionaMenorLance(Leilao leilao) {
+        menorLance.setText(formatador.formata(leilao.getMenorLance()));
+    }
+
+    private void adicionaMaiorLance(Leilao leilao) {
+        maiorLance.setText(formatador.formata(leilao.getMaiorLance()));
+    }
+
+    private void adicionaDescricao(Leilao leilao) {
+        descricao.setText(leilao.getDescricao());
+    }
+
+
 }
