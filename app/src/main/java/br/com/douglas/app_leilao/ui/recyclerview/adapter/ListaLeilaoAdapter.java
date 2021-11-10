@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.douglas.app_leilao.R;
@@ -22,9 +23,9 @@ public class ListaLeilaoAdapter extends RecyclerView.Adapter<ListaLeilaoAdapter.
     private final FormatadorDeMoeda formatadorDeMoeda;
     private OnItemClickListener onItemClickListener;
 
-    public ListaLeilaoAdapter(Context context, List<Leilao> leiloes) {
+    public ListaLeilaoAdapter(Context context) {
         this.context = context;
-        this.leiloes = leiloes;
+        this.leiloes = new ArrayList<>();;
         this.formatadorDeMoeda = new FormatadorDeMoeda();
     }
 
@@ -50,6 +51,12 @@ public class ListaLeilaoAdapter extends RecyclerView.Adapter<ListaLeilaoAdapter.
         return leiloes.size();
     }
 
+    public void atualiza(List<Leilao> leiloes) {
+        this.leiloes.clear();
+        this.leiloes.addAll(leiloes);
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView descricao;
@@ -58,10 +65,8 @@ public class ListaLeilaoAdapter extends RecyclerView.Adapter<ListaLeilaoAdapter.
 
         ViewHolder(View itemView) {
             super(itemView);
-
             descricao = itemView.findViewById(R.id.item_leilao_descricao);
             maiorLance = itemView.findViewById(R.id.item_leilao_maior_lance);
-
             itemView.setOnClickListener(v -> onItemClickListener.onItemClick(leilao));
         }
 
