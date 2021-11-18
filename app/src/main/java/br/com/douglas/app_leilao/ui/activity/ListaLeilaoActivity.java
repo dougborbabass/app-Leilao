@@ -24,6 +24,7 @@ public class ListaLeilaoActivity extends AppCompatActivity {
     private final LeilaoWebClient client = new LeilaoWebClient();
     private ListaLeilaoAdapter adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +34,6 @@ public class ListaLeilaoActivity extends AppCompatActivity {
     }
 
     private void configuraListaLeiloes() {
-
         configuraAdapter();
         configuraRecyclerView();
     }
@@ -64,6 +64,10 @@ public class ListaLeilaoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        buscaLeiloes(adapter);
+    }
+
+    public void buscaLeiloes(final ListaLeilaoAdapter adapter) {
         client.todos(new RespostaListener<List<Leilao>>() {
             @Override
             public void sucesso(List<Leilao> leiloes) {
@@ -95,7 +99,7 @@ public class ListaLeilaoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    private List<Leilao> leiloesDeExemplo() {
+    //    private List<Leilao> leiloesDeExemplo() {
 //        Leilao console = new Leilao("Console");
 //        console.propoe(new Lance(new Usuario("Alex"), 200.0));
 //        console.propoe(new Lance(new Usuario("Fran"), 300.0));
