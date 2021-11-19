@@ -5,6 +5,7 @@ import android.content.Context;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -21,6 +22,7 @@ import br.com.douglas.app_leilao.ui.recyclerview.adapter.ListaLeilaoAdapter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,5 +54,21 @@ public class AtualizadorDeLeiloesTest {
                 new Leilao("Computador"),
                 new Leilao("Carro")
         )));
+    }
+
+    @Test
+    public void deve_ApresentarMensagemDeFalha_QuandoFalharABuscaDeLeiloes() {
+        AtualizadorDeLeiloes atualizador = Mockito.spy(new AtualizadorDeLeiloes());
+        doNothing().when(atualizador).mostraMsgDeFalha(context);
+
+        doAnswer(invocation -> {
+            RespostaListener<List<Leilao>> argument = invocation.getArgument(0);
+            argument.falha(Mockito.anyString());
+            return null;
+        }).when(client).todos(any(RespostaListener.class));
+
+        atualizador.buscaLeiloes(adapter, client, context);
+
+        verify(atualizador).mostraMsgDeFalha(context);
     }
 }
