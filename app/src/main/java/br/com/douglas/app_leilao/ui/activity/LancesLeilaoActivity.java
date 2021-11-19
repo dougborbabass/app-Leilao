@@ -2,7 +2,6 @@ package br.com.douglas.app_leilao.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +16,7 @@ import br.com.douglas.app_leilao.database.dao.UsuarioDAO;
 import br.com.douglas.app_leilao.formatter.FormatadorDeMoeda;
 import br.com.douglas.app_leilao.model.Lance;
 import br.com.douglas.app_leilao.model.Leilao;
+import br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager;
 import br.com.douglas.app_leilao.ui.dialog.NovoLanceDialog;
 
 public class LancesLeilaoActivity extends AppCompatActivity {
@@ -82,7 +82,7 @@ public class LancesLeilaoActivity extends AppCompatActivity {
         EnviadorDeLance enviador = new EnviadorDeLance(
                 client,
                 lanceProcessadoListener(),
-                this);
+                new AvisoDialogManager(this));
         enviador.envia(leilaoRecebido, lance);
     }
 

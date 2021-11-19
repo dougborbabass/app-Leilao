@@ -1,7 +1,5 @@
 package br.com.douglas.app_leilao.api;
 
-import android.content.Context;
-
 import br.com.douglas.app_leilao.api.retrofit.client.LeilaoWebClient;
 import br.com.douglas.app_leilao.api.retrofit.client.RespostaListener;
 import br.com.douglas.app_leilao.exception.LanceMenorQueOUltimoLanceException;
@@ -9,24 +7,20 @@ import br.com.douglas.app_leilao.exception.LanceSeguidoDoMesmoUsuarioException;
 import br.com.douglas.app_leilao.exception.UsuarioJaDeuCincoLancesException;
 import br.com.douglas.app_leilao.model.Lance;
 import br.com.douglas.app_leilao.model.Leilao;
-
-import static br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager.mostraAvisoLanceMenorQueUltimoLance;
-import static br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager.mostraAvisoLanceSeguidoDoMesmoUsuario;
-import static br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager.mostraAvisoUsuarioJaDeuCincoLances;
-import static br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager.mostraToastFalhaNoEnvio;
+import br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager;
 
 public class EnviadorDeLance {
 
     private final LeilaoWebClient client;
     private final LanceProcessadoListener listener;
-    private final Context context;
+    private final AvisoDialogManager avisoManager;
 
-    public EnviadorDeLance (LeilaoWebClient client,
+    public EnviadorDeLance(LeilaoWebClient client,
                            LanceProcessadoListener listener,
-                           Context context) {
+                           AvisoDialogManager avisoManager) {
         this.client = client;
         this.listener = listener;
-        this.context = context;
+        this.avisoManager = avisoManager;
     }
 
     public void envia(final Leilao leilao, Lance lance) {
@@ -40,15 +34,15 @@ public class EnviadorDeLance {
 
                 @Override
                 public void falha(String mensagem) {
-                    mostraToastFalhaNoEnvio(context);
+                    avisoManager.mostraToastFalhaNoEnvio();
                 }
             });
         } catch (LanceMenorQueOUltimoLanceException exception) {
-            mostraAvisoLanceMenorQueUltimoLance(context);
+            avisoManager.mostraAvisoLanceMenorQueUltimoLance();
         } catch (LanceSeguidoDoMesmoUsuarioException exception) {
-            mostraAvisoLanceSeguidoDoMesmoUsuario(context);
+            avisoManager.mostraAvisoLanceSeguidoDoMesmoUsuario();
         } catch (UsuarioJaDeuCincoLancesException exception) {
-            mostraAvisoUsuarioJaDeuCincoLances(context);
+            avisoManager.mostraAvisoUsuarioJaDeuCincoLances();
         }
     }
 

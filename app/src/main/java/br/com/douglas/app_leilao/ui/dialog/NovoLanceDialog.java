@@ -23,7 +23,6 @@ import br.com.douglas.app_leilao.model.Lance;
 import br.com.douglas.app_leilao.model.Usuario;
 import br.com.douglas.app_leilao.ui.activity.ListaUsuarioActivity;
 
-import static br.com.douglas.app_leilao.ui.dialog.AvisoDialogManager.mostraAvisoValorInvalido;
 
 public class NovoLanceDialog {
 
@@ -108,7 +107,7 @@ public class NovoLanceDialog {
                     Lance novoLance = new Lance(usuario, valor);
                     listener.lanceCriado(novoLance);
                 } catch (NumberFormatException e) {
-                    mostraAvisoValorInvalido(context);
+                    new AvisoDialogManager(context).mostraAvisoValorInvalido();
                 }
             }
         };
