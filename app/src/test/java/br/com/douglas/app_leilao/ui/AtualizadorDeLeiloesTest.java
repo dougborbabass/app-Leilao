@@ -1,14 +1,10 @@
 package br.com.douglas.app_leilao.ui;
 
-import android.content.Context;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +18,6 @@ import br.com.douglas.app_leilao.ui.recyclerview.adapter.ListaLeilaoAdapter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,7 +28,7 @@ public class AtualizadorDeLeiloesTest {
     @Mock
     private LeilaoWebClient client;
     @Mock
-    private Context context;
+    private AtualizadorDeLeiloes.ErroCarregaLeiloesListener listener;
 
     @Test
     public void deve_AtualizarListaDeLeiloes_QuandoBuscarLeiloesDaApi() {
@@ -47,7 +42,7 @@ public class AtualizadorDeLeiloesTest {
             return null;
         }).when(client).todos(any(RespostaListener.class));
 
-        atualizador.buscaLeiloes(adapter, client, context);
+        atualizador.buscaLeiloes(adapter, client, listener);
 
         verify(client).todos(any(RespostaListener.class));
         verify(adapter).atualiza(new ArrayList<>(Arrays.asList(
@@ -59,7 +54,6 @@ public class AtualizadorDeLeiloesTest {
     @Test
     public void deve_ApresentarMensagemDeFalha_QuandoFalharABuscaDeLeiloes() {
         AtualizadorDeLeiloes atualizador = Mockito.spy(new AtualizadorDeLeiloes());
-        doNothing().when(atualizador).mostraMsgDeFalha(context);
 
         doAnswer(invocation -> {
             RespostaListener<List<Leilao>> argument = invocation.getArgument(0);
@@ -67,8 +61,8 @@ public class AtualizadorDeLeiloesTest {
             return null;
         }).when(client).todos(any(RespostaListener.class));
 
-        atualizador.buscaLeiloes(adapter, client, context);
+        atualizador.buscaLeiloes(adapter, client, listener);
 
-        verify(atualizador).mostraMsgDeFalha(context);
+        verify(listener).erroAoCarregar(anyString());
     }
 }
