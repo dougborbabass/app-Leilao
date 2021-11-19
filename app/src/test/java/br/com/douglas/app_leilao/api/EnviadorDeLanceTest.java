@@ -52,4 +52,22 @@ public class EnviadorDeLanceTest {
 
         verify(managerAviso).mostraAvisoUsuarioJaDeuCincoLances();
     }
+
+    //TODO
+    @Test
+    public void deve_MostrarMensagemDeFalha_QuandoOUsuarioDoUltimoLanceDerNovoLance(){
+
+    }
+
+    //TODO
+    @Test
+    public void deve_MostraMensagemDeFalha_QuandoFalharEnvioDeLanceParaAPI(){
+
+    }
+
+    //TODO
+    @Test
+    public void deve_NotificarLanceProcessado_QuandoEnviarLanceParaAPIComSucesso(){
+
+    }
 }
