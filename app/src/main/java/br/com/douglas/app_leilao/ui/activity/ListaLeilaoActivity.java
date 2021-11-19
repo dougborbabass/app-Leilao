@@ -4,24 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import br.com.douglas.app_leilao.R;
 import br.com.douglas.app_leilao.api.retrofit.client.LeilaoWebClient;
-import br.com.douglas.app_leilao.api.retrofit.client.RespostaListener;
 import br.com.douglas.app_leilao.model.Leilao;
+import br.com.douglas.app_leilao.ui.AtualizadorDeLeiloes;
 import br.com.douglas.app_leilao.ui.recyclerview.adapter.ListaLeilaoAdapter;
 
 public class ListaLeilaoActivity extends AppCompatActivity {
 
     private static final String TITULO_APPBAR = "Leilões";
-    private static final String MENSAGEM_AVISO_FALHA_AO_CARREGAR_LEILOES = "Não foi possível carregar os leilões";
     private final LeilaoWebClient client = new LeilaoWebClient();
+    private final AtualizadorDeLeiloes atualizadorDeLeiloes = new AtualizadorDeLeiloes();
     private ListaLeilaoAdapter adapter;
 
 
@@ -45,12 +42,7 @@ public class ListaLeilaoActivity extends AppCompatActivity {
 
     private void configuraAdapter() {
         adapter = new ListaLeilaoAdapter(this);
-        adapter.setOnItemClickListener(new ListaLeilaoAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Leilao leilao) {
-                vaiParaTelaDeLances(leilao);
-            }
-        });
+        adapter.setOnItemClickListener(this::vaiParaTelaDeLances);
     }
 
     private void vaiParaTelaDeLances(Leilao leilao) {
@@ -64,23 +56,7 @@ public class ListaLeilaoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        buscaLeiloes(adapter);
-    }
-
-    public void buscaLeiloes(final ListaLeilaoAdapter adapter) {
-        client.todos(new RespostaListener<List<Leilao>>() {
-            @Override
-            public void sucesso(List<Leilao> leiloes) {
-                adapter.atualiza(leiloes);
-            }
-
-            @Override
-            public void falha(String mensagem) {
-                Toast.makeText(ListaLeilaoActivity.this,
-                        MENSAGEM_AVISO_FALHA_AO_CARREGAR_LEILOES,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        atualizadorDeLeiloes.buscaLeiloes(adapter, client, this);
     }
 
     @Override

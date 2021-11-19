@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import br.com.douglas.app_leilao.exception.LanceMenorQueOUltimoLanceException;
 import br.com.douglas.app_leilao.exception.LanceSeguidoDoMesmoUsuarioException;
@@ -96,5 +97,23 @@ public class Leilao implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Leilao leilao = (Leilao) o;
+
+        if (id != leilao.id) return false;
+        return Objects.equals(descricao, leilao.descricao);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (descricao != null ? descricao.hashCode() : 0);
+        return result;
     }
 }
