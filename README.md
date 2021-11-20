@@ -11,9 +11,7 @@ Desenvolvido com foco em testes validando as regras de negócio onde:
 
 Além disso é feito a validação das chamadas de API com sucesso e falha.
 
-Testes em cada unidade, inicialmente desenvolvido com TDD.
-
-Uso do mockito para dependencias do android e desacomplamento.
+Testes de unidade, testes de integração e testes de UI
 
 ###### API spring boot
 - Para utilizar a API abrir o terminal na pasta server (localizada dentro do projeto) e executar:
