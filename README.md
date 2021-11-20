@@ -15,7 +15,9 @@ Testes em cada unidade, inicialmente desenvolvido com TDD.
 
 Uso do mockito para dependencias do android e desacomplamento.
 
-# API spring boot
-- Para utilizar a API abrir o terminal na pasta server (localizada dentro do projeto) e executar
-'''cmd
+###### API spring boot
+- Para utilizar a API abrir o terminal na pasta server (localizada dentro do projeto) e executar:
+
+```
 java -jar server.jar
+```
