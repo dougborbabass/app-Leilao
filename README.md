@@ -14,8 +14,14 @@ Além disso é feito a validação das chamadas de API com sucesso e falha.
 Testes de unidade, testes de integração e testes de UI
 
 ###### API spring boot
-- Para utilizar a API abrir o terminal na pasta server (localizada dentro do projeto) e executar:
+- Para utilizar a API em "Produção" abrir o terminal na pasta server (localizada dentro do projeto) e executar:
 
 ```
 java -jar server.jar
+```
+
+- Para utilizar a API em "Teste" abrir o terminal na pasta server (localizada dentro do projeto) e executar:
+
+```
+java -jar -Dspring.profiles.active=teste server.jar
 ```
