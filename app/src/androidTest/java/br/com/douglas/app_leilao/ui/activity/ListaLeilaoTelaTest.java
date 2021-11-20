@@ -1,12 +1,14 @@
 package br.com.douglas.app_leilao.ui.activity;
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import org.junit.Rule;
 import org.junit.Test;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 public class ListaLeilaoTelaTest {
 
@@ -15,8 +17,8 @@ public class ListaLeilaoTelaTest {
 
     @Test
     public void deve_AparecerUmLeilao_QuandoCarregarUmLeilaoNaApi() {
-        Espresso.onView(ViewMatchers.withText("Carro"))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        onView(withText("Carro"))
+                .check(matches(isDisplayed()));
     }
 
 }
