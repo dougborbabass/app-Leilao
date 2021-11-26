@@ -1,34 +1,25 @@
 package br.com.douglas.app_leilao.ui.activity;
 
 import android.content.Intent;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.rule.ActivityTestRule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import br.com.douglas.app_leilao.R;
 import br.com.douglas.app_leilao.api.retrofit.client.TesteWebClient;
-import br.com.douglas.app_leilao.formatter.FormatadorDeMoeda;
 import br.com.douglas.app_leilao.model.Leilao;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.core.AllOf.allOf;
+import static br.com.douglas.app_leilao.matchers.ViewMatcher.apareceLeilaoNaPosicao;
 
 public class ListaLeilaoTelaTest {
 
@@ -39,15 +30,10 @@ public class ListaLeilaoTelaTest {
             new ActivityTestRule<>(ListaLeilaoActivity.class, true, false);
 
     private final TesteWebClient webClient = new TesteWebClient();
-    private final FormatadorDeMoeda formatadorDeMoeda = new FormatadorDeMoeda();
-    ;
 
     @Before
     public void setup() throws IOException {
-        boolean bancoDeDadosNaoFoiLimpo = !webClient.limpaBancoDeDados();
-        if (bancoDeDadosNaoFoiLimpo) {
-            Assert.fail(BANCO_DE_DADOS_NÃO_FOI_LIMPO);
-        }
+        limpaBancoDeDadosDaApi();
     }
 
     @Test
@@ -55,14 +41,9 @@ public class ListaLeilaoTelaTest {
         tentaSalvarLeilaoNaApi(new Leilao("Carro"));
 
         activity.launchActivity(new Intent());
-        onView(allOf(withText("Carro"),
-                withId(R.id.item_leilao_descricao)))
-                .check(matches(isDisplayed()));
 
-        String formatoEsperado = formatadorDeMoeda.formata(0.00);
-        onView(allOf(withText(formatoEsperado),
-                withId(R.id.item_leilao_maior_lance)))
-                .check(matches(isDisplayed()));
+        onView(withId(R.id.lista_leilao_recyclerview))
+                .check(matches(apareceLeilaoNaPosicao(0, "Carro", 0.00)));
     }
 
     @Test
@@ -71,53 +52,25 @@ public class ListaLeilaoTelaTest {
                 new Leilao("Carro"),
                 new Leilao("Xicara"));
 
-        String formatoEsperado = formatadorDeMoeda.formata(0.00);
-
         activity.launchActivity(new Intent());
-//        onView(allOf(withText("Carro"),
-//                withId(R.id.item_leilao_descricao)))
-//                .check(matches(isDisplayed()));
-//
-//        onView(allOf(withText(formatoEsperado),
-//                withId(R.id.item_leilao_maior_lance)))
-//                .check(matches(isDisplayed()));
-//
-//        onView(allOf(withText("Xicara"),
-//                withId(R.id.item_leilao_descricao)))
-//                .check(matches(isDisplayed()));
-//
-//        onView(allOf(withText(formatoEsperado),
-//                withId(R.id.item_leilao_maior_lance)))
-//                .check(matches(isDisplayed()));
 
         onView(withId(R.id.lista_leilao_recyclerview))
-                .check(matches(apareceLeilao(0, "Carro", 0.00)));
+                .check(matches(apareceLeilaoNaPosicao(0, "Carro", 0.00)));
+
+        onView(withId(R.id.lista_leilao_recyclerview))
+                .check(matches(apareceLeilaoNaPosicao(1, "Xicara", 0.00)));
     }
 
-    private Matcher<? super View> apareceLeilao(int posicao,
-                                                String descricaoEsperada,
-                                                double maiorLanceEsperado) {
-        return new BoundedMatcher<View, RecyclerView>(RecyclerView.class) {
-            @Override
-            public void describeTo(Description description) {
+    @After
+    public void tearDown() throws IOException {
+        limpaBancoDeDadosDaApi();
+    }
 
-            }
-
-            @Override
-            protected boolean matchesSafely(RecyclerView item) {
-                View viewDoViewHolder = Objects.requireNonNull(item.findViewHolderForAdapterPosition(posicao)).itemView;
-                TextView textViewDescricao = viewDoViewHolder.findViewById(R.id.item_leilao_descricao);
-                boolean temDescricaoEsperada = textViewDescricao.getText().toString()
-                        .equals(descricaoEsperada);
-
-                TextView textViewMaiorLance = viewDoViewHolder.findViewById(R.id.item_leilao_maior_lance);
-                FormatadorDeMoeda formatadorDeMoeda = new FormatadorDeMoeda();
-                boolean temMaiorLanceEsperado = textViewMaiorLance.getText().toString()
-                        .equals(formatadorDeMoeda.formata(maiorLanceEsperado));
-
-                return temDescricaoEsperada && temMaiorLanceEsperado;
-            }
-        };
+    private void limpaBancoDeDadosDaApi() throws IOException {
+        boolean bancoDeDadosNaoFoiLimpo = !webClient.limpaBancoDeDados();
+        if (bancoDeDadosNaoFoiLimpo) {
+            Assert.fail(BANCO_DE_DADOS_NÃO_FOI_LIMPO);
+        }
     }
 
     private void tentaSalvarLeilaoNaApi(Leilao... leiloes) throws IOException {
