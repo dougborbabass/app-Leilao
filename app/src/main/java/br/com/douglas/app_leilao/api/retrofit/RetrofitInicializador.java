@@ -2,6 +2,7 @@ package br.com.douglas.app_leilao.api.retrofit;
 
 import androidx.annotation.NonNull;
 
+import br.com.douglas.app_leilao.BuildConfig;
 import br.com.douglas.app_leilao.api.retrofit.service.LeilaoService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -12,8 +13,8 @@ import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
 public class RetrofitInicializador {
 
-    private static final String URL_BASE = "http://192.168.0.2:8081";
-    private final Retrofit retrofit;
+    private static final String URL_BASE = BuildConfig.URL_BASE;
+    protected final Retrofit retrofit;
 
     public RetrofitInicializador() {
         OkHttpClient client = configuraHttpClient();

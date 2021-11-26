@@ -1,6 +1,5 @@
 package br.com.douglas.app_leilao.api.retrofit.client;
 
-import java.io.IOException;
 import java.util.List;
 
 import br.com.douglas.app_leilao.api.retrofit.RetrofitInicializador;
@@ -11,7 +10,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LeilaoWebClient {
+public class LeilaoWebClient extends WebClient {
 
     private final LeilaoService service;
 
@@ -51,25 +50,5 @@ public class LeilaoWebClient {
                 listener.falha(t.getMessage());
             }
         });
-    }
-
-    private <T> boolean temDados(Response<T> response) {
-        return response.isSuccessful() && response.body() != null;
-    }
-
-    public Leilao salva(Leilao leilao) throws IOException {
-        Call<Leilao> call = service.salva(leilao);
-        Response<Leilao> response = call.execute();
-
-        if (temDados(response)) {
-            return response.body();
-        }
-        return null;
-    }
-
-    public boolean limpaBancoDeDados() throws IOException {
-        Call<Void> call = service.limpaBancoDeDados();
-        Response<Void> resposta = call.execute();
-        return resposta.isSuccessful();
     }
 }
