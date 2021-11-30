@@ -41,8 +41,8 @@ public class ViewMatcher {
                     throw new IndexOutOfBoundsException("View do ViewHolder na posição " + posicao + " não foi encontrado");
                 }
                 View viewDoViewHolder = viewHolderDevolvido.itemView;
-                boolean temDescricaoEsperada = verificaDescricaoEsperada(viewDoViewHolder);
-                boolean temMaiorLanceEsperado = verificaMaiorLanceEsperado(viewDoViewHolder);
+                boolean temDescricaoEsperada = apareceDescricaoEsperada(viewDoViewHolder);
+                boolean temMaiorLanceEsperado = apareceMaiorLanceEsperado(viewDoViewHolder);
 
                 return temDescricaoEsperada
                         && temMaiorLanceEsperado
@@ -50,16 +50,18 @@ public class ViewMatcher {
             }
 
 
-            private boolean verificaMaiorLanceEsperado(View viewDoViewHolder) {
+            private boolean apareceMaiorLanceEsperado(View viewDoViewHolder) {
                 TextView textViewMaiorLance = viewDoViewHolder.findViewById(R.id.item_leilao_maior_lance);
                 return textViewMaiorLance.getText().toString()
-                        .equals(maiorLanceEsperadoFormatado);
+                        .equals(maiorLanceEsperadoFormatado) &&
+                        displayed.matches(textViewMaiorLance);
             }
 
-            private boolean verificaDescricaoEsperada(View viewDoViewHolder) {
+            private boolean apareceDescricaoEsperada(View viewDoViewHolder) {
                 TextView textViewDescricao = viewDoViewHolder.findViewById(R.id.item_leilao_descricao);
                 return textViewDescricao.getText().toString()
-                        .equals(descricaoEsperada);
+                        .equals(descricaoEsperada) &&
+                        displayed.matches(textViewDescricao);
             }
         };
     }
