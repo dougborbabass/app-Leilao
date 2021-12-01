@@ -76,7 +76,7 @@ public class NovoLanceDialog {
         View viewCriada = LayoutInflater.from(context)
                 .inflate(R.layout.form_lance, null, false);
 
-        Spinner campoUsuarios = viewCriada.findViewById(R.id.form_lance_usuario);
+        Spinner campoUsuarios = viewCriada.findViewById(R.id.sp_form_lance_usuario);
         TextInputLayout textInputValor = viewCriada.findViewById(R.id.form_lance_valor);
 
         configuraSpinnerUsuarios(usuarios, campoUsuarios);

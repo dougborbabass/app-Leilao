@@ -2,22 +2,17 @@ package br.com.douglas.app_leilao.ui.activity;
 
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import br.com.douglas.app_leilao.BaseTesteIntegracao;
 import br.com.douglas.app_leilao.BuildConfig;
 import br.com.douglas.app_leilao.R;
 
@@ -34,7 +29,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
-public class ListaUsuariosTest {
+public class ListaUsuariosTelaTest extends BaseTesteIntegracao {
 
     @Rule
     public ActivityTestRule<ListaLeilaoActivity> mActivityTestRule = new ActivityTestRule<>(ListaLeilaoActivity.class);
@@ -74,7 +69,6 @@ public class ListaUsuariosTest {
 
     @After
     public void tearDown() {
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        appContext.deleteDatabase(BuildConfig.BANCO_DE_DADOS);
+        limpaBancoDeDadosInterno();
     }
 }
