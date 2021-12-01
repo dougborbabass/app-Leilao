@@ -24,6 +24,7 @@ import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -58,17 +59,21 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
         //Clica no FAB da tela de lances do leilao
-        onView(withId(R.id.lances_leilao_fab_adiciona))
+        onView(allOf(withId(R.id.lances_leilao_fab_adiciona),
+                isDisplayed()))
                 .perform(click());
 
         //Verifica se aparece dialog de aviso por não ter usuario cadastrado
         onView(withText("Usuários não encontrados"))
                 .check(matches(isDisplayed()));
-        onView(withText("Não existe usuários cadastrados! Cadastre um usuário para propor o lance."))
+
+        onView(allOf(withText("Não existe usuários cadastrados! Cadastre um usuário para propor o lance."),
+                withId(android.R.id.message)))
                 .check(matches(isDisplayed()));
 
         //Clica no botão cadastrar usuário
-        onView(withText("Cadastrar usuário"))
+        onView(allOf(withText("Cadastrar usuário"),
+                isDisplayed()))
                 .perform(click());
 
         //Clica no FAB da tela lista de usuarios
@@ -77,7 +82,7 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
 
         //Clica no editText e preenche com o nome do usuario
         onView(withId(R.id.form_usuario_nome_edit_text))
-                .perform(replaceText("Douglas"), closeSoftKeyboard());
+                .perform(typeText("Douglas"), closeSoftKeyboard());
 
         //Clica em adicionar
         onView(withText("ADICIONAR"))
@@ -87,7 +92,8 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
         pressBack();
 
         //Clica no FAB lances do leilao
-        onView(withId(R.id.lances_leilao_fab_adiciona))
+        onView(allOf(withId(R.id.lances_leilao_fab_adiciona),
+                isDisplayed()))
                 .perform(click());
 
         //Verifica visibilidade do dialog com o titulo esperado
@@ -95,18 +101,21 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
                 .check(matches(isDisplayed()));
 
         //Clica no editText de valor e preenche
-        onView(withId(R.id.form_lance_valor_editText))
-                .perform(click(), replaceText("200"), closeSoftKeyboard());
+        onView(allOf(withId(R.id.form_lance_valor_editText)
+                , isDisplayed()))
+                .perform(click(), typeText("200"), closeSoftKeyboard());
 
         //Seleciona o usuario
-        onView(withId(R.id.sp_form_lance_usuario))
+        onView(allOf(withId(R.id.sp_form_lance_usuario),
+                isDisplayed()))
                 .perform(click());
         onData(is(new Usuario(1, "Douglas")))
                 .inRoot(isPlatformPopup())
                 .perform(click());
 
         //Clica no botão propor
-        onView(withText("PROPOR"))
+        onView(allOf(withText("PROPOR"),
+                isDisplayed()))
                 .perform(click());
 
         //Fazer assertion para as views de maior e maior lances e tb para os maiores lances
