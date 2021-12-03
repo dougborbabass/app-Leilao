@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import br.com.douglas.app_leilao.BaseTesteIntegracao;
 import br.com.douglas.app_leilao.R;
-import br.com.douglas.app_leilao.database.dao.UsuarioDAO;
 import br.com.douglas.app_leilao.formatter.FormatadorDeMoeda;
 import br.com.douglas.app_leilao.model.Leilao;
 import br.com.douglas.app_leilao.model.Usuario;
@@ -30,10 +29,8 @@ import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.fail;
 
 public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
 
@@ -93,11 +90,6 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
         //Clica no back do android
         pressBack();
 
-        //Clica no FAB lances do leilao
-        onView(allOf(withId(R.id.lances_leilao_fab_adiciona),
-                isDisplayed()))
-                .perform(click());
-
         //Verifica visibilidade do dialog com o titulo esperado
         propoeNovoLance("200", 1, "Douglas");
 
@@ -114,7 +106,7 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
                                 isDisplayed())));
 
         onView(withId(R.id.lances_leilao_maiores_lances))
-                .check(matches(allOf(withText("200.0 - (1) Douglas\n"),
+                .check(matches(allOf(withText(formatadorDeMoeda.formata(200) + " - (1) Douglas\n"),
                         isDisplayed())));
     }
 
@@ -144,9 +136,37 @@ public class LancesLeilaoTelaTest extends BaseTesteIntegracao {
                                 isDisplayed())));
 
         onView(withId(R.id.lances_leilao_maiores_lances))
-                .check(matches(allOf(withText("400.0 - (1) Douglas\n" +
-                                "300.0 - (2) Carol\n" +
-                                "200.0 - (1) Douglas\n"),
+                .check(matches(allOf(withText(formatadorDeMoeda.formata(400) + " - (1) Douglas\n" +
+                                formatadorDeMoeda.formata(300) + " - (2) Carol\n" +
+                                formatadorDeMoeda.formata(200) + " - (1) Douglas\n"),
+                        isDisplayed())));
+    }
+
+    @Test
+    public void deve_AtualizarLancesDoLeilao_QuandoRecebeUmLanceDeValorMuitoAlto() throws IOException {
+        tentaSalvarLeilaoNaApi(new Leilao("Carro"));
+        tentaSalvarUsuariosNoBancoDeDados(new Usuario("Douglas"));
+
+        activity.launchActivity(new Intent());
+
+        onView(withId(R.id.lista_leilao_recyclerview))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+        propoeNovoLance("2000000000", 1, "Douglas");
+
+        FormatadorDeMoeda formatadorDeMoeda = new FormatadorDeMoeda();
+        onView(withId(R.id.lances_leilao_maior_lance))
+                .check(matches(
+                        allOf(withText(formatadorDeMoeda.formata(2000000000)),
+                                isDisplayed())));
+
+        onView(withId(R.id.lances_leilao_menor_lance))
+                .check(matches(
+                        allOf(withText(formatadorDeMoeda.formata(2000000000)),
+                                isDisplayed())));
+
+        onView(withId(R.id.lances_leilao_maiores_lances))
+                .check(matches(allOf(withText(formatadorDeMoeda.formata(2000000000) + " - (1) Douglas\n"),
                         isDisplayed())));
     }
 
